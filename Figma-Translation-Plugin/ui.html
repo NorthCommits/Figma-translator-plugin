@@ -1,0 +1,566 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Figma Translation Plugin</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: #ffffff;
+      color: #000000;
+      padding: 0;
+      margin: 0;
+      overflow-x: hidden;
+    }
+
+    /* Header */
+    .header {
+      background: linear-gradient(135deg, #034ea2 0%, #0260c4 100%);
+      padding: 20px;
+      text-align: center;
+      box-shadow: 0 2px 8px rgba(3, 78, 162, 0.15);
+    }
+
+    .header h1 {
+      color: #ffffff;
+      font-size: 20px;
+      font-weight: 600;
+      margin-bottom: 5px;
+    }
+
+    .header p {
+      color: rgba(255, 255, 255, 0.9);
+      font-size: 12px;
+      font-weight: 400;
+    }
+
+    /* Container */
+    .container {
+      padding: 20px;
+    }
+
+    /* Section */
+    .section {
+      margin-bottom: 24px;
+    }
+
+    .section-title {
+      font-size: 14px;
+      font-weight: 600;
+      color: #034ea2;
+      margin-bottom: 12px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .step-number {
+      background: #034ea2;
+      color: white;
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 12px;
+      font-weight: 600;
+    }
+
+    /* Buttons */
+    .btn {
+      width: 100%;
+      padding: 12px 20px;
+      border: none;
+      border-radius: 8px;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, #034ea2 0%, #0260c4 100%);
+      color: white;
+      box-shadow: 0 2px 8px rgba(3, 78, 162, 0.25);
+    }
+
+    .btn-primary:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 4px 12px rgba(3, 78, 162, 0.35);
+    }
+
+    .btn-primary:active {
+      transform: translateY(0);
+    }
+
+    .btn-secondary {
+      background: white;
+      color: #034ea2;
+      border: 2px solid #034ea2;
+    }
+
+    .btn-secondary:hover {
+      background: #f8fafc;
+    }
+
+    .btn-success {
+      background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+      color: white;
+      box-shadow: 0 2px 8px rgba(16, 185, 129, 0.25);
+    }
+
+    .btn-success:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 4px 12px rgba(16, 185, 129, 0.35);
+    }
+
+    .btn:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+      transform: none !important;
+    }
+
+    /* Info Card */
+    .info-card {
+      background: #f0f7ff;
+      border: 1px solid #b3d9ff;
+      border-radius: 8px;
+      padding: 12px;
+      font-size: 12px;
+      color: #034ea2;
+      line-height: 1.5;
+    }
+
+    .info-card.success {
+      background: #f0fdf4;
+      border-color: #86efac;
+      color: #065f46;
+    }
+
+    .info-card.error {
+      background: #fef2f2;
+      border-color: #fecaca;
+      color: #991b1b;
+    }
+
+    .info-card strong {
+      font-weight: 600;
+    }
+
+    /* Stats */
+    .stats {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin-bottom: 16px;
+    }
+
+    .stat-card {
+      background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+      border: 1px solid #e2e8f0;
+      border-radius: 8px;
+      padding: 12px;
+      text-align: center;
+    }
+
+    .stat-value {
+      font-size: 24px;
+      font-weight: 700;
+      color: #034ea2;
+      margin-bottom: 4px;
+    }
+
+    .stat-label {
+      font-size: 11px;
+      color: #64748b;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    /* File Input */
+    .file-input-wrapper {
+      position: relative;
+      margin-bottom: 12px;
+    }
+
+    input[type="file"] {
+      display: none;
+    }
+
+    .file-input-label {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      width: 100%;
+      padding: 12px 20px;
+      border: 2px dashed #034ea2;
+      border-radius: 8px;
+      background: #f8fafc;
+      color: #034ea2;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .file-input-label:hover {
+      background: #f0f7ff;
+      border-color: #0260c4;
+    }
+
+    .file-name {
+      font-size: 12px;
+      color: #64748b;
+      margin-top: 8px;
+      text-align: center;
+      font-style: italic;
+    }
+
+    /* Divider */
+    .divider {
+      height: 1px;
+      background: linear-gradient(to right, transparent, #e2e8f0, transparent);
+      margin: 24px 0;
+    }
+
+    /* Hidden */
+    .hidden {
+      display: none !important;
+    }
+
+    /* Error List */
+    .error-list {
+      max-height: 150px;
+      overflow-y: auto;
+      margin-top: 8px;
+      padding: 8px;
+      background: white;
+      border-radius: 4px;
+      font-size: 11px;
+    }
+
+    .error-item {
+      padding: 4px 0;
+      border-bottom: 1px solid #fee;
+    }
+
+    .error-item:last-child {
+      border-bottom: none;
+    }
+
+    /* Loading Spinner */
+    .spinner {
+      border: 3px solid #f3f4f6;
+      border-top: 3px solid #034ea2;
+      border-radius: 50%;
+      width: 20px;
+      height: 20px;
+      animation: spin 0.8s linear infinite;
+    }
+
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+
+    /* Scrollbar */
+    ::-webkit-scrollbar {
+      width: 8px;
+    }
+
+    ::-webkit-scrollbar-track {
+      background: #f1f5f9;
+    }
+
+    ::-webkit-scrollbar-thumb {
+      background: #cbd5e1;
+      border-radius: 4px;
+    }
+
+    ::-webkit-scrollbar-thumb:hover {
+      background: #94a3b8;
+    }
+  </style>
+</head>
+<body>
+  <!-- Header -->
+  <div class="header">
+    <h1>🌐 Translation Plugin</h1>
+    <p>Extract, Translate, and Apply text seamlessly</p>
+  </div>
+
+  <!-- Main Container -->
+  <div class="container">
+    
+    <!-- Step 1: Extract Text -->
+    <div class="section" id="step1-section">
+      <div class="section-title">
+        <span class="step-number">1</span>
+        <span>Extract Text from Frame</span>
+      </div>
+      <div class="info-card">
+        Select a frame in Figma, then click below to extract all text elements.
+      </div>
+      <br>
+      <button class="btn btn-primary" id="extract-btn">
+        <span>📤</span>
+        <span>Extract Text</span>
+      </button>
+    </div>
+
+    <!-- Step 2: Export Excel (Hidden initially) -->
+    <div class="section hidden" id="step2-section">
+      <div class="divider"></div>
+      <div class="section-title">
+        <span class="step-number">2</span>
+        <span>Export to Excel</span>
+      </div>
+      
+      <div class="stats">
+        <div class="stat-card">
+          <div class="stat-value" id="text-count">0</div>
+          <div class="stat-label">Text Elements</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-value">✓</div>
+          <div class="stat-label">Ready to Export</div>
+        </div>
+      </div>
+
+      <div class="info-card success">
+        <strong>Success!</strong> Text extracted successfully. Download the Excel file, add translations, and upload it back.
+      </div>
+      <br>
+      <button class="btn btn-success" id="export-btn">
+        <span>📥</span>
+        <span>Download Excel File</span>
+      </button>
+    </div>
+
+    <!-- Step 3: Upload & Apply (Hidden initially) -->
+    <div class="section hidden" id="step3-section">
+      <div class="divider"></div>
+      <div class="section-title">
+        <span class="step-number">3</span>
+        <span>Upload Translations</span>
+      </div>
+      
+      <div class="info-card">
+        Upload the Excel file with completed translations to apply them to your Figma frame.
+      </div>
+      <br>
+      
+      <div class="file-input-wrapper">
+        <input type="file" id="file-input" accept=".xlsx,.xls">
+        <label for="file-input" class="file-input-label">
+          <span>📎</span>
+          <span>Choose Excel File</span>
+        </label>
+        <div class="file-name" id="file-name">No file selected</div>
+      </div>
+
+      <button class="btn btn-primary" id="apply-btn" disabled>
+        <span>✨</span>
+        <span>Apply Translations</span>
+      </button>
+    </div>
+
+    <!-- Results Section (Hidden initially) -->
+    <div class="section hidden" id="results-section">
+      <div class="divider"></div>
+      <div class="info-card" id="results-card">
+        <!-- Results will be displayed here -->
+      </div>
+    </div>
+
+  </div>
+
+  <!-- SheetJS Library -->
+  <script src="https://cdn.sheetjs.com/xlsx-0.20.1/package/dist/xlsx.full.min.js"></script>
+
+  <!-- Main Script -->
+  <script>
+    let extractedData = [];
+    let uploadedFile = null;
+
+    // UI Elements
+    const extractBtn = document.getElementById('extract-btn');
+    const exportBtn = document.getElementById('export-btn');
+    const applyBtn = document.getElementById('apply-btn');
+    const fileInput = document.getElementById('file-input');
+    const fileName = document.getElementById('file-name');
+    const textCount = document.getElementById('text-count');
+    
+    const step2Section = document.getElementById('step2-section');
+    const step3Section = document.getElementById('step3-section');
+    const resultsSection = document.getElementById('results-section');
+    const resultsCard = document.getElementById('results-card');
+
+    // Extract Text Button
+    extractBtn.addEventListener('click', () => {
+      extractBtn.disabled = true;
+      extractBtn.innerHTML = '<div class="spinner"></div><span>Extracting...</span>';
+      parent.postMessage({ pluginMessage: { type: 'extract-text' } }, '*');
+    });
+
+    // Export Excel Button
+    exportBtn.addEventListener('click', () => {
+      exportToExcel();
+    });
+
+    // File Input Change
+    fileInput.addEventListener('change', (e) => {
+      const file = e.target.files[0];
+      if (file) {
+        uploadedFile = file;
+        fileName.textContent = file.name;
+        applyBtn.disabled = false;
+      }
+    });
+
+    // Apply Translations Button
+    applyBtn.addEventListener('click', () => {
+      if (uploadedFile) {
+        readExcelFile(uploadedFile);
+      }
+    });
+
+    // Export to Excel
+    function exportToExcel() {
+      const data = extractedData.map(item => ({
+        'Extraction_ID': item.id,
+        'Extracted_Text': item.text,
+        'Translation': ''
+      }));
+
+      const ws = XLSX.utils.json_to_sheet(data);
+      const wb = XLSX.utils.book_new();
+      XLSX.utils.book_append_sheet(wb, ws, 'Translations');
+
+      // Set column widths
+      ws['!cols'] = [
+        { wch: 15 },  // Extraction_ID
+        { wch: 50 },  // Extracted_Text
+        { wch: 50 }   // Translation
+      ];
+
+      XLSX.writeFile(wb, 'figma_translations.xlsx');
+    }
+
+    // Read Excel File
+    function readExcelFile(file) {
+      applyBtn.disabled = true;
+      applyBtn.innerHTML = '<div class="spinner"></div><span>Processing...</span>';
+
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        try {
+          const data = new Uint8Array(e.target.result);
+          const workbook = XLSX.read(data, { type: 'array' });
+          const sheetName = workbook.SheetNames[0];
+          const worksheet = workbook.Sheets[sheetName];
+          const jsonData = XLSX.utils.sheet_to_json(worksheet);
+
+          // Prepare translation data
+          const translations = jsonData.map(row => {
+            const originalItem = extractedData.find(item => item.id === row.Extraction_ID);
+            return {
+              id: row.Extraction_ID,
+              originalText: row.Extracted_Text,
+              translation: row.Translation || row.Extracted_Text,
+              nodeId: originalItem ? originalItem.nodeId : ''
+            };
+          });
+
+          // Send to Figma plugin
+          parent.postMessage({ 
+            pluginMessage: { 
+              type: 'apply-translations', 
+              data: translations 
+            } 
+          }, '*');
+
+        } catch (error) {
+          showError('Error reading Excel file: ' + error.message);
+          applyBtn.disabled = false;
+          applyBtn.innerHTML = '<span>✨</span><span>Apply Translations</span>';
+        }
+      };
+      reader.readAsArrayBuffer(file);
+    }
+
+    // Show Error
+    function showError(message) {
+      resultsSection.classList.remove('hidden');
+      resultsCard.className = 'info-card error';
+      resultsCard.innerHTML = `<strong>Error:</strong> ${message}`;
+    }
+
+    // Handle Messages from Plugin
+    window.onmessage = (event) => {
+      const msg = event.data.pluginMessage;
+
+      if (msg.type === 'text-extracted') {
+        extractedData = msg.data;
+        textCount.textContent = msg.count;
+        
+        // Show step 2 and 3
+        step2Section.classList.remove('hidden');
+        step3Section.classList.remove('hidden');
+        
+        // Reset extract button
+        extractBtn.disabled = false;
+        extractBtn.innerHTML = '<span>📤</span><span>Extract Text</span>';
+      }
+
+      if (msg.type === 'translation-applied') {
+        applyBtn.disabled = false;
+        applyBtn.innerHTML = '<span>✨</span><span>Apply Translations</span>';
+        
+        resultsSection.classList.remove('hidden');
+        
+        if (msg.errorCount === 0) {
+          resultsCard.className = 'info-card success';
+          resultsCard.innerHTML = `
+            <strong>Success!</strong> Applied ${msg.successCount} translation(s) successfully.
+          `;
+        } else {
+          resultsCard.className = 'info-card error';
+          let errorHtml = `
+            <strong>Partial Success:</strong> Applied ${msg.successCount} translation(s), 
+            but ${msg.errorCount} failed.
+          `;
+          
+          if (msg.errors && msg.errors.length > 0) {
+            errorHtml += '<div class="error-list">';
+            msg.errors.forEach(err => {
+              errorHtml += `<div class="error-item">${err}</div>`;
+            });
+            errorHtml += '</div>';
+          }
+          
+          resultsCard.innerHTML = errorHtml;
+        }
+      }
+
+      if (msg.type === 'error') {
+        showError(msg.message);
+        extractBtn.disabled = false;
+        extractBtn.innerHTML = '<span>📤</span><span>Extract Text</span>';
+      }
+    };
+  </script>
+</body>
+</html>
