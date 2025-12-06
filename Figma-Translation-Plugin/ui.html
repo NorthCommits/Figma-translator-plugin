@@ -154,6 +154,12 @@
       color: #991b1b;
     }
 
+    .info-card.warning {
+      background: #fffbeb;
+      border-color: #fde68a;
+      color: #92400e;
+    }
+
     .info-card strong {
       font-weight: 600;
     }
@@ -240,8 +246,8 @@
       display: none !important;
     }
 
-    /* Error List */
-    .error-list {
+    /* Error/Warning List */
+    .message-list {
       max-height: 150px;
       overflow-y: auto;
       margin-top: 8px;
@@ -251,12 +257,21 @@
       font-size: 11px;
     }
 
-    .error-item {
+    .message-item {
       padding: 4px 0;
       border-bottom: 1px solid #fee;
     }
 
-    .error-item:last-child {
+    .message-item:last-child {
+      border-bottom: none;
+    }
+
+    .warning-item {
+      padding: 4px 0;
+      border-bottom: 1px solid #fef3c7;
+    }
+
+    .warning-item:last-child {
       border-bottom: none;
     }
 
@@ -311,7 +326,7 @@
         <span>Extract Text from Frame</span>
       </div>
       <div class="info-card">
-        Select a frame in Figma, then click below to extract all text elements.
+        Select a frame in Figma, then click below to extract all text elements with their formatting metadata.
       </div>
       <br>
       <button class="btn btn-primary" id="extract-btn">
@@ -340,7 +355,7 @@
       </div>
 
       <div class="info-card success">
-        <strong>Success!</strong> Text extracted successfully. Download the Excel file, add translations, and upload it back.
+        <strong>Success!</strong> Text extracted with metadata (font, size, color, length). Download the Excel file, add translations, and upload it back.
       </div>
       <br>
       <button class="btn btn-success" id="export-btn">
@@ -358,7 +373,7 @@
       </div>
       
       <div class="info-card">
-        Upload the Excel file with completed translations to apply them to your Figma frame.
+        Upload the Excel file with completed translations. The plugin will verify text length and warn about potential overflows.
       </div>
       <br>
       
@@ -385,6 +400,13 @@
       </div>
     </div>
 
+    <!-- Warnings Section (Hidden initially) -->
+    <div class="section hidden" id="warnings-section">
+      <div class="info-card warning" id="warnings-card">
+        <!-- Warnings will be displayed here -->
+      </div>
+    </div>
+
   </div>
 
   <!-- SheetJS Library -->
@@ -407,6 +429,8 @@
     const step3Section = document.getElementById('step3-section');
     const resultsSection = document.getElementById('results-section');
     const resultsCard = document.getElementById('results-card');
+    const warningsSection = document.getElementById('warnings-section');
+    const warningsCard = document.getElementById('warnings-card');
 
     // Extract Text Button
     extractBtn.addEventListener('click', () => {
@@ -437,12 +461,49 @@
       }
     });
 
+    // Helper function to get font info as string
+    function getFontInfo(fontName) {
+      if (fontName && fontName.family && fontName.style) {
+        return `${fontName.family} ${fontName.style}`;
+      }
+      return 'Mixed';
+    }
+
+    // Helper function to get color as hex
+    function getColorHex(fills) {
+      if (!fills || fills === 'mixed' || !Array.isArray(fills) || fills.length === 0) {
+        return 'N/A';
+      }
+      const fill = fills[0];
+      if (fill.type === 'SOLID') {
+        const r = Math.round(fill.color.r * 255).toString(16).padStart(2, '0');
+        const g = Math.round(fill.color.g * 255).toString(16).padStart(2, '0');
+        const b = Math.round(fill.color.b * 255).toString(16).padStart(2, '0');
+        return `#${r}${g}${b}`;
+      }
+      return 'N/A';
+    }
+
     // Export to Excel
     function exportToExcel() {
       const data = extractedData.map(item => ({
         'Extraction_ID': item.id,
         'Extracted_Text': item.text,
-        'Translation': ''
+        'Translation': '',
+        'Font_Family': getFontInfo(item.fontName),
+        'Font_Size': item.fontSize !== 'MIXED' ? item.fontSize : 'Mixed',
+        'Font_Weight': item.fontWeight !== 'MIXED' ? item.fontWeight : 'Mixed',
+        'Text_Color': getColorHex(item.fills),
+        'Character_Count': item.characterCount,
+        'Width': Math.round(item.width),
+        'Height': Math.round(item.height),
+        'Text_Align_H': item.textAlignHorizontal,
+        'Text_Align_V': item.textAlignVertical,
+        'Auto_Resize': item.textAutoResize,
+        'Has_Hyperlink': item.hasHyperlink ? 'Yes' : 'No',
+        'Hyperlink_URLs': item.hasHyperlink && item.hyperlink.links.length > 0 
+          ? item.hyperlink.links.map(l => l.url).join(', ') 
+          : 'None'
       }));
 
       const ws = XLSX.utils.json_to_sheet(data);
@@ -453,7 +514,19 @@
       ws['!cols'] = [
         { wch: 15 },  // Extraction_ID
         { wch: 50 },  // Extracted_Text
-        { wch: 50 }   // Translation
+        { wch: 50 },  // Translation
+        { wch: 20 },  // Font_Family
+        { wch: 12 },  // Font_Size
+        { wch: 12 },  // Font_Weight
+        { wch: 12 },  // Text_Color
+        { wch: 15 },  // Character_Count
+        { wch: 10 },  // Width
+        { wch: 10 },  // Height
+        { wch: 15 },  // Text_Align_H
+        { wch: 15 },  // Text_Align_V
+        { wch: 12 },  // Auto_Resize
+        { wch: 15 },  // Has_Hyperlink
+        { wch: 40 }   // Hyperlink_URLs
       ];
 
       XLSX.writeFile(wb, 'figma_translations.xlsx');
@@ -473,16 +546,21 @@
           const worksheet = workbook.Sheets[sheetName];
           const jsonData = XLSX.utils.sheet_to_json(worksheet);
 
-          // Prepare translation data
+          // Prepare translation data with metadata
           const translations = jsonData.map(row => {
             const originalItem = extractedData.find(item => item.id === row.Extraction_ID);
+            if (!originalItem) {
+              return null;
+            }
+            
             return {
               id: row.Extraction_ID,
               originalText: row.Extracted_Text,
               translation: row.Translation || row.Extracted_Text,
-              nodeId: originalItem ? originalItem.nodeId : ''
+              nodeId: originalItem.nodeId,
+              metadata: originalItem
             };
-          });
+          }).filter(item => item !== null);
 
           // Send to Figma plugin
           parent.postMessage({ 
@@ -531,6 +609,19 @@
         
         resultsSection.classList.remove('hidden');
         
+        // Show warnings if any
+        if (msg.warnings && msg.warnings.length > 0) {
+          warningsSection.classList.remove('hidden');
+          let warningHtml = '<strong>⚠ Text Overflow Warnings:</strong><div class="message-list">';
+          msg.warnings.forEach(warning => {
+            warningHtml += `<div class="warning-item">${warning}</div>`;
+          });
+          warningHtml += '</div>';
+          warningsCard.innerHTML = warningHtml;
+        } else {
+          warningsSection.classList.add('hidden');
+        }
+        
         if (msg.errorCount === 0) {
           resultsCard.className = 'info-card success';
           resultsCard.innerHTML = `
@@ -544,9 +635,9 @@
           `;
           
           if (msg.errors && msg.errors.length > 0) {
-            errorHtml += '<div class="error-list">';
+            errorHtml += '<div class="message-list">';
             msg.errors.forEach(err => {
-              errorHtml += `<div class="error-item">${err}</div>`;
+              errorHtml += `<div class="message-item">${err}</div>`;
             });
             errorHtml += '</div>';
           }
