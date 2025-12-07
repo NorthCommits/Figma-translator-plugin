@@ -157,13 +157,6 @@
       padding: 20px;
     }
 
-    .card-footer {
-      padding: 16px 20px;
-      background: #f9fafb;
-      border-top: 1px solid #f3f4f6;
-      border-radius: 0 0 6px 6px;
-    }
-
     /* Stats Grid */
     .stats-grid {
       display: grid;
@@ -253,14 +246,13 @@
       background: #059669;
     }
 
-    .btn-outline {
-      background: white;
-      color: #034ea2;
-      border: 1px solid #034ea2;
+    .btn-warning {
+      background: #f59e0b;
+      color: white;
     }
 
-    .btn-outline:hover:not(:disabled) {
-      background: #f0f7ff;
+    .btn-warning:hover:not(:disabled) {
+      background: #d97706;
     }
 
     .btn:disabled {
@@ -270,6 +262,45 @@
 
     .btn-icon {
       font-size: 14px;
+    }
+
+    /* Button Group */
+    .btn-group {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin-bottom: 16px;
+    }
+
+    /* Form Elements */
+    .form-group {
+      margin-bottom: 16px;
+    }
+
+    .form-label {
+      display: block;
+      font-size: 12px;
+      font-weight: 500;
+      color: #374151;
+      margin-bottom: 6px;
+    }
+
+    .form-select {
+      width: 100%;
+      height: 36px;
+      padding: 0 12px;
+      border: 1px solid #d1d5db;
+      border-radius: 6px;
+      font-size: 13px;
+      font-family: inherit;
+      background: white;
+      cursor: pointer;
+    }
+
+    .form-select:focus {
+      outline: none;
+      border-color: #034ea2;
+      box-shadow: 0 0 0 3px rgba(3, 78, 162, 0.1);
     }
 
     /* File Upload */
@@ -297,7 +328,7 @@
       transition: all 0.2s ease;
     }
 
-    .file-upload-label:hover {
+    .file-upload-label:hover:not(.disabled) {
       border-color: #034ea2;
       background: #f0f7ff;
       color: #034ea2;
@@ -308,6 +339,12 @@
       background: #f0fdf4;
       color: #065f46;
       border-style: solid;
+    }
+
+    .file-upload-label.disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+      background: #f3f4f6;
     }
 
     .file-info {
@@ -394,17 +431,36 @@
       100% { transform: rotate(360deg); }
     }
 
+    /* Progress Bar */
+    .progress-container {
+      margin: 16px 0;
+    }
+
+    .progress-bar {
+      width: 100%;
+      height: 6px;
+      background: #e5e7eb;
+      border-radius: 3px;
+      overflow: hidden;
+    }
+
+    .progress-fill {
+      height: 100%;
+      background: linear-gradient(90deg, #034ea2 0%, #0260c4 100%);
+      transition: width 0.3s ease;
+      border-radius: 3px;
+    }
+
+    .progress-text {
+      font-size: 11px;
+      color: #6b7280;
+      margin-top: 6px;
+      text-align: center;
+    }
+
     /* Utility Classes */
     .hidden {
       display: none !important;
-    }
-
-    .text-muted {
-      color: #6b7280;
-    }
-
-    .text-small {
-      font-size: 11px;
     }
 
     .mb-0 { margin-bottom: 0; }
@@ -439,11 +495,31 @@
       margin: 20px 0;
     }
 
-    /* Icon styles */
-    .icon {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
+    .divider-text {
+      text-align: center;
+      position: relative;
+      margin: 20px 0;
+    }
+
+    .divider-text::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 50%;
+      width: 100%;
+      height: 1px;
+      background: #e5e7eb;
+    }
+
+    .divider-text span {
+      position: relative;
+      background: white;
+      padding: 0 12px;
+      font-size: 11px;
+      color: #6b7280;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      font-weight: 500;
     }
   </style>
 </head>
@@ -499,11 +575,11 @@
       </div>
     </div>
 
-    <!-- Step 2: Export (Hidden) -->
+    <!-- Step 2: Export & Translation Options (Hidden) -->
     <div class="card hidden" id="export-card">
       <div class="card-header">
-        <div class="card-title">Export Translation Template</div>
-        <div class="card-description">Download Excel file with extracted text and formatting metadata</div>
+        <div class="card-title">Translation Options</div>
+        <div class="card-description">Choose to download Excel template or use AI-powered translation</div>
       </div>
       <div class="card-body">
         <div class="stats-grid mb-20">
@@ -527,11 +603,52 @@
           <div class="alert-title">Extraction Complete</div>
           Text elements captured with font styles, colors, sizes, and hyperlinks preserved.
         </div>
-        
-        <button class="btn btn-success" id="export-btn">
-          <span class="btn-icon">⬇</span>
-          <span>Download Excel Template</span>
-        </button>
+
+        <div class="divider-text">
+          <span>Choose Translation Method</span>
+        </div>
+
+        <!-- Manual Excel Export -->
+        <div class="mb-16">
+          <button class="btn btn-success" id="export-btn">
+            <span class="btn-icon">⬇</span>
+            <span>Download Excel Template</span>
+          </button>
+        </div>
+
+        <!-- AI Translation -->
+        <div>
+          <div class="form-group">
+            <label class="form-label">AI Translation - Target Language</label>
+            <select class="form-select" id="target-language">
+              <option value="es">Spanish</option>
+              <option value="fr">French</option>
+              <option value="de">German</option>
+              <option value="it">Italian</option>
+              <option value="pt">Portuguese</option>
+              <option value="ru">Russian</option>
+              <option value="ja">Japanese</option>
+              <option value="ko">Korean</option>
+              <option value="zh">Chinese (Simplified)</option>
+              <option value="ar">Arabic</option>
+              <option value="hi">Hindi</option>
+              <option value="nl">Dutch</option>
+            </select>
+          </div>
+
+          <button class="btn btn-warning" id="translate-btn">
+            <span class="btn-icon">✨</span>
+            <span>Translate with AI</span>
+          </button>
+
+          <!-- Translation Progress (Hidden) -->
+          <div class="progress-container hidden" id="translation-progress">
+            <div class="progress-bar">
+              <div class="progress-fill" id="progress-fill" style="width: 0%"></div>
+            </div>
+            <div class="progress-text" id="progress-text">Translating 0 of 0...</div>
+          </div>
+        </div>
       </div>
     </div>
 
@@ -542,7 +659,7 @@
         <div class="card-description">Import your completed translation file to apply changes</div>
       </div>
       <div class="card-body">
-        <div class="alert alert-info mb-16">
+        <div class="alert alert-info mb-16" id="upload-info">
           <div class="alert-title">Translation Guidelines</div>
           Fill the "Translation" column in the Excel file. Keep character count similar to avoid text overflow.
         </div>
@@ -592,16 +709,24 @@
   <script>
     let extractedData = [];
     let uploadedFile = null;
+    let translationMode = 'manual'; // 'manual' or 'ai'
 
     // UI Elements
     const extractBtn = document.getElementById('extract-btn');
     const exportBtn = document.getElementById('export-btn');
+    const translateBtn = document.getElementById('translate-btn');
     const applyBtn = document.getElementById('apply-btn');
     const fileInput = document.getElementById('file-input');
     const fileUploadLabel = document.getElementById('file-upload-label');
     const fileInfo = document.getElementById('file-info');
     const textCount = document.getElementById('text-count');
     const textCountIcon = document.getElementById('text-count-icon');
+    const targetLanguage = document.getElementById('target-language');
+    const uploadInfo = document.getElementById('upload-info');
+    
+    const translationProgress = document.getElementById('translation-progress');
+    const progressFill = document.getElementById('progress-fill');
+    const progressText = document.getElementById('progress-text');
     
     const extractCard = document.getElementById('extract-card');
     const exportCard = document.getElementById('export-card');
@@ -633,12 +758,165 @@
     // Export Excel Button
     exportBtn.addEventListener('click', () => {
       exportToExcel();
+      translationMode = 'manual';
+      uploadCard.classList.remove('hidden');
+      fileInput.disabled = false;
+      fileUploadLabel.classList.remove('disabled');
+      updateWorkflow(3);
     });
+
+    // Translate Button
+    translateBtn.addEventListener('click', async () => {
+      translationMode = 'ai';
+      
+      // Lock manual upload
+      fileInput.disabled = true;
+      fileUploadLabel.classList.add('disabled');
+      uploadInfo.innerHTML = `
+        <div class="alert-title">AI Translation Active</div>
+        Manual file upload is disabled. AI translation is processing your texts.
+      `;
+
+      translateBtn.disabled = true;
+      translateBtn.innerHTML = '<div class="spinner"></div><span>Translating...</span>';
+      translationProgress.classList.remove('hidden');
+
+      const language = targetLanguage.value;
+      const languageNames = {
+        'es': 'Spanish', 'fr': 'French', 'de': 'German', 'it': 'Italian',
+        'pt': 'Portuguese', 'ru': 'Russian', 'ja': 'Japanese', 'ko': 'Korean',
+        'zh': 'Chinese', 'ar': 'Arabic', 'hi': 'Hindi', 'nl': 'Dutch'
+      };
+
+      try {
+        const translations = await translateTexts(
+          extractedData.map(item => item.text),
+          languageNames[language]
+        );
+
+        // Update extracted data with translations
+        extractedData.forEach((item, index) => {
+          item.translation = translations[index];
+        });
+
+        // Show success
+        translationProgress.classList.add('hidden');
+        translateBtn.disabled = false;
+        translateBtn.innerHTML = '<span class="btn-icon">✓</span><span>Translation Complete</span>';
+        translateBtn.classList.remove('btn-warning');
+        translateBtn.classList.add('btn-success');
+
+        // Prepare and send translations to Figma
+        const translationData = extractedData.map(item => ({
+          id: item.id,
+          originalText: item.text,
+          translation: item.translation,
+          nodeId: item.nodeId,
+          metadata: item
+        }));
+
+        updateWorkflow(4);
+        uploadCard.classList.remove('hidden');
+        
+        // Show AI apply button
+        resultsCard.classList.remove('hidden');
+        document.getElementById('results-content').innerHTML = `
+          <div class="alert alert-success mb-16">
+            <div class="alert-title">AI Translation Complete</div>
+            ${extractedData.length} text(s) translated to ${languageNames[language]}. Click below to apply to your Figma frame.
+          </div>
+          <button class="btn btn-primary" id="apply-ai-translations">
+            <span class="btn-icon">✨</span>
+            <span>Apply AI Translations</span>
+          </button>
+        `;
+
+        document.getElementById('apply-ai-translations').addEventListener('click', () => {
+          document.getElementById('apply-ai-translations').disabled = true;
+          document.getElementById('apply-ai-translations').innerHTML = '<div class="spinner"></div><span>Applying...</span>';
+          
+          parent.postMessage({ 
+            pluginMessage: { 
+              type: 'apply-translations', 
+              data: translationData 
+            } 
+          }, '*');
+        });
+
+      } catch (error) {
+        translationProgress.classList.add('hidden');
+        translateBtn.disabled = false;
+        translateBtn.innerHTML = '<span class="btn-icon">✨</span><span>Translate with AI</span>';
+        
+        resultsCard.classList.remove('hidden');
+        document.getElementById('results-content').innerHTML = `
+          <div class="alert alert-error">
+            <div class="alert-title">Translation Failed</div>
+            ${error.message}
+          </div>
+        `;
+      }
+    });
+
+    // Translate texts using OpenAI
+    async function translateTexts(texts, targetLang) {
+      const batchSize = 10;
+      const batches = [];
+      
+      for (let i = 0; i < texts.length; i += batchSize) {
+        batches.push(texts.slice(i, i + batchSize));
+      }
+
+      const allTranslations = [];
+      let processedCount = 0;
+
+      for (const batch of batches) {
+        const prompt = `Translate the following texts to ${targetLang}. Return ONLY a JSON array of translated strings, maintaining the same order. Do not include any explanations or additional text.\n\nTexts to translate:\n${JSON.stringify(batch)}`;
+
+        const response = await fetch('https://api.openai.com/v1/chat/completions', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${OPENAI_API_KEY}`
+          },
+          body: JSON.stringify({
+            model: 'gpt-4o-mini',
+            messages: [
+              {
+                role: 'system',
+                content: 'You are a professional translator. Return only valid JSON arrays of translated strings.'
+              },
+              {
+                role: 'user',
+                content: prompt
+              }
+            ],
+            temperature: 0.3
+          })
+        });
+
+        if (!response.ok) {
+          const error = await response.json();
+          throw new Error(error.error?.message || 'Translation failed');
+        }
+
+        const data = await response.json();
+        const translatedBatch = JSON.parse(data.choices[0].message.content);
+        allTranslations.push(...translatedBatch);
+
+        processedCount += batch.length;
+        const progress = (processedCount / texts.length) * 100;
+        progressFill.style.width = `${progress}%`;
+        progressText.textContent = `Translating ${processedCount} of ${texts.length}...`;
+      }
+
+      return allTranslations;
+    }
 
     // File Input Change
     fileInput.addEventListener('change', (e) => {
       const file = e.target.files[0];
-      if (file) {
+      if (file && !fileInput.disabled) {
         uploadedFile = file;
         fileUploadLabel.classList.add('has-file');
         fileUploadLabel.innerHTML = `<span class="btn-icon">✓</span><span>${file.name}</span>`;
@@ -680,25 +958,34 @@
 
     // Export to Excel
     function exportToExcel() {
-      const data = extractedData.map(item => ({
-        'Extraction_ID': item.id,
-        'Extracted_Text': item.text,
-        'Translation': '',
-        'Font_Family': getFontInfo(item.fontName),
-        'Font_Size': item.fontSize !== 'MIXED' ? item.fontSize : 'Mixed',
-        'Font_Weight': item.fontWeight !== 'MIXED' ? item.fontWeight : 'Mixed',
-        'Text_Color': getColorHex(item.fills),
-        'Character_Count': item.characterCount,
-        'Width': Math.round(item.width),
-        'Height': Math.round(item.height),
-        'Text_Align_H': item.textAlignHorizontal,
-        'Text_Align_V': item.textAlignVertical,
-        'Auto_Resize': item.textAutoResize,
-        'Has_Hyperlink': item.hasHyperlink ? 'Yes' : 'No',
-        'Hyperlink_URLs': item.hasHyperlink && item.hyperlink.links.length > 0 
-          ? item.hyperlink.links.map(l => l.url).join(', ') 
-          : 'None'
-      }));
+      const data = extractedData.map(item => {
+        // Clean text to prevent Excel formatting issues - each extraction in one cell
+        const cleanText = (text) => {
+          if (!text) return '';
+          // Replace line breaks with spaces and trim
+          return String(text).replace(/[\r\n]+/g, ' ').trim();
+        };
+
+        return {
+          'Extraction_ID': item.id,
+          'Extracted_Text': cleanText(item.text),
+          'Translation': '',
+          'Font_Family': getFontInfo(item.fontName),
+          'Font_Size': item.fontSize !== 'MIXED' ? item.fontSize : 'Mixed',
+          'Font_Weight': item.fontWeight !== 'MIXED' ? item.fontWeight : 'Mixed',
+          'Text_Color': getColorHex(item.fills),
+          'Character_Count': item.characterCount,
+          'Width': Math.round(item.width),
+          'Height': Math.round(item.height),
+          'Text_Align_H': item.textAlignHorizontal,
+          'Text_Align_V': item.textAlignVertical,
+          'Auto_Resize': item.textAutoResize,
+          'Has_Hyperlink': item.hasHyperlink ? 'Yes' : 'No',
+          'Hyperlink_URLs': item.hasHyperlink && item.hyperlink.links.length > 0 
+            ? item.hyperlink.links.map(l => l.url).join(', ') 
+            : 'None'
+        };
+      });
 
       const ws = XLSX.utils.json_to_sheet(data);
       const wb = XLSX.utils.book_new();
@@ -723,10 +1010,22 @@
         { wch: 40 }   // Hyperlink_URLs
       ];
 
+      // Ensure each cell is treated as text (prevents merging) - ONE EXTRACTION PER CELL
+      const range = XLSX.utils.decode_range(ws['!ref']);
+      for (let R = range.s.r; R <= range.e.r; ++R) {
+        for (let C = range.s.c; C <= range.e.c; ++C) {
+          const cellAddress = XLSX.utils.encode_cell({ r: R, c: C });
+          if (!ws[cellAddress]) continue;
+          
+          // Force cells to be text type - ensures one extraction per cell
+          if (ws[cellAddress].t !== 's') {
+            ws[cellAddress].t = 's';
+            ws[cellAddress].v = String(ws[cellAddress].v);
+          }
+        }
+      }
+
       XLSX.writeFile(wb, 'figma_translations.xlsx');
-      
-      // Update workflow
-      updateWorkflow(3);
     }
 
     // Read Excel File
@@ -797,9 +1096,8 @@
         textCount.textContent = msg.count;
         textCountIcon.textContent = msg.count;
         
-        // Show export and upload cards
+        // Show export card
         exportCard.classList.remove('hidden');
-        uploadCard.classList.remove('hidden');
         
         // Update workflow
         updateWorkflow(2);
@@ -812,6 +1110,14 @@
       if (msg.type === 'translation-applied') {
         applyBtn.disabled = false;
         applyBtn.innerHTML = '<span class="btn-icon">✓</span><span>Apply Translations</span>';
+        
+        // Re-enable AI translation button if it was used
+        if (translationMode === 'ai') {
+          translateBtn.disabled = false;
+          translateBtn.innerHTML = '<span class="btn-icon">✨</span><span>Translate with AI</span>';
+          translateBtn.classList.remove('btn-success');
+          translateBtn.classList.add('btn-warning');
+        }
         
         resultsCard.classList.remove('hidden');
         

@@ -9,10 +9,11 @@
   "editorType": [
     "figma"
   ],
-  "ui": "ui.html",
+  "ui": "ui-compiled.html",
   "networkAccess": {
     "allowedDomains": [
-      "https://cdn.sheetjs.com"
+      "https://cdn.sheetjs.com",
+      "https://api.openai.com"
     ]
   }
 }

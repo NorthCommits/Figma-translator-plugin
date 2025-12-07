@@ -315,4 +315,4 @@ async function applyTranslations(translations: Array<{
   if (warnings.length > 0) {
     figma.notify(`⚠ ${warnings.length} text(s) may overflow. Check the plugin for details.`, { timeout: 5000 });
   }
-} 
+}
