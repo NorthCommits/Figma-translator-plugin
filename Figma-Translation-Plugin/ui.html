@@ -11,278 +11,382 @@
     }
 
     body {
-      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-      background: #ffffff;
-      color: #000000;
-      padding: 0;
-      margin: 0;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Helvetica', 'Arial', sans-serif;
+      background: #fafbfc;
+      color: #1f2937;
+      font-size: 13px;
+      line-height: 1.5;
       overflow-x: hidden;
     }
 
     /* Header */
     .header {
-      background: linear-gradient(135deg, #034ea2 0%, #0260c4 100%);
-      padding: 20px;
-      text-align: center;
-      box-shadow: 0 2px 8px rgba(3, 78, 162, 0.15);
+      background: #034ea2;
+      padding: 16px 20px;
+      border-bottom: 1px solid rgba(0, 0, 0, 0.1);
     }
 
-    .header h1 {
+    .header-content {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .header-title {
       color: #ffffff;
-      font-size: 20px;
+      font-size: 14px;
       font-weight: 600;
-      margin-bottom: 5px;
+      letter-spacing: -0.01em;
     }
 
-    .header p {
-      color: rgba(255, 255, 255, 0.9);
-      font-size: 12px;
-      font-weight: 400;
+    .header-subtitle {
+      color: rgba(255, 255, 255, 0.7);
+      font-size: 11px;
+      margin-top: 2px;
     }
 
     /* Container */
     .container {
       padding: 20px;
+      max-width: 100%;
     }
 
-    /* Section */
-    .section {
+    /* Workflow Steps */
+    .workflow {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
       margin-bottom: 24px;
-    }
-
-    .section-title {
-      font-size: 14px;
-      font-weight: 600;
-      color: #034ea2;
-      margin-bottom: 12px;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-
-    .step-number {
-      background: #034ea2;
-      color: white;
-      width: 24px;
-      height: 24px;
-      border-radius: 50%;
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 12px;
-      font-weight: 600;
-    }
-
-    /* Buttons */
-    .btn {
-      width: 100%;
-      padding: 12px 20px;
-      border: none;
-      border-radius: 8px;
-      font-size: 14px;
-      font-weight: 600;
-      cursor: pointer;
-      transition: all 0.2s ease;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 8px;
-    }
-
-    .btn-primary {
-      background: linear-gradient(135deg, #034ea2 0%, #0260c4 100%);
-      color: white;
-      box-shadow: 0 2px 8px rgba(3, 78, 162, 0.25);
-    }
-
-    .btn-primary:hover {
-      transform: translateY(-1px);
-      box-shadow: 0 4px 12px rgba(3, 78, 162, 0.35);
-    }
-
-    .btn-primary:active {
-      transform: translateY(0);
-    }
-
-    .btn-secondary {
+      padding: 16px;
       background: white;
-      color: #034ea2;
-      border: 2px solid #034ea2;
+      border: 1px solid #e5e7eb;
+      border-radius: 6px;
     }
 
-    .btn-secondary:hover {
-      background: #f8fafc;
+    .workflow-step {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      flex: 1;
+      position: relative;
     }
 
-    .btn-success {
-      background: linear-gradient(135deg, #10b981 0%, #059669 100%);
-      color: white;
-      box-shadow: 0 2px 8px rgba(16, 185, 129, 0.25);
+    .workflow-step:not(:last-child)::after {
+      content: '';
+      position: absolute;
+      right: -50%;
+      top: 16px;
+      width: 100%;
+      height: 2px;
+      background: #e5e7eb;
+      z-index: 0;
     }
 
-    .btn-success:hover {
-      transform: translateY(-1px);
-      box-shadow: 0 4px 12px rgba(16, 185, 129, 0.35);
+    .workflow-step.active:not(:last-child)::after {
+      background: #034ea2;
     }
 
-    .btn:disabled {
-      opacity: 0.5;
-      cursor: not-allowed;
-      transform: none !important;
-    }
-
-    /* Info Card */
-    .info-card {
-      background: #f0f7ff;
-      border: 1px solid #b3d9ff;
-      border-radius: 8px;
-      padding: 12px;
+    .step-circle {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      background: #f3f4f6;
+      border: 2px solid #e5e7eb;
+      display: flex;
+      align-items: center;
+      justify-content: center;
       font-size: 12px;
+      font-weight: 600;
+      color: #9ca3af;
+      margin-bottom: 8px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .workflow-step.active .step-circle {
+      background: #034ea2;
+      border-color: #034ea2;
+      color: white;
+    }
+
+    .workflow-step.completed .step-circle {
+      background: #10b981;
+      border-color: #10b981;
+      color: white;
+    }
+
+    .step-label {
+      font-size: 11px;
+      color: #6b7280;
+      text-align: center;
+      font-weight: 500;
+    }
+
+    .workflow-step.active .step-label {
       color: #034ea2;
-      line-height: 1.5;
-    }
-
-    .info-card.success {
-      background: #f0fdf4;
-      border-color: #86efac;
-      color: #065f46;
-    }
-
-    .info-card.error {
-      background: #fef2f2;
-      border-color: #fecaca;
-      color: #991b1b;
-    }
-
-    .info-card.warning {
-      background: #fffbeb;
-      border-color: #fde68a;
-      color: #92400e;
-    }
-
-    .info-card strong {
       font-weight: 600;
     }
 
-    /* Stats */
-    .stats {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 12px;
+    /* Card */
+    .card {
+      background: white;
+      border: 1px solid #e5e7eb;
+      border-radius: 6px;
       margin-bottom: 16px;
     }
 
-    .stat-card {
-      background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
-      border: 1px solid #e2e8f0;
-      border-radius: 8px;
+    .card-header {
+      padding: 16px 20px;
+      border-bottom: 1px solid #f3f4f6;
+    }
+
+    .card-title {
+      font-size: 13px;
+      font-weight: 600;
+      color: #111827;
+      margin-bottom: 4px;
+    }
+
+    .card-description {
+      font-size: 12px;
+      color: #6b7280;
+      line-height: 1.5;
+    }
+
+    .card-body {
+      padding: 20px;
+    }
+
+    .card-footer {
+      padding: 16px 20px;
+      background: #f9fafb;
+      border-top: 1px solid #f3f4f6;
+      border-radius: 0 0 6px 6px;
+    }
+
+    /* Stats Grid */
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 12px;
+      margin-bottom: 20px;
+    }
+
+    .stat-item {
+      background: #f9fafb;
+      border: 1px solid #e5e7eb;
+      border-radius: 4px;
       padding: 12px;
-      text-align: center;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .stat-icon {
+      width: 36px;
+      height: 36px;
+      border-radius: 6px;
+      background: linear-gradient(135deg, #034ea2 0%, #0260c4 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-size: 16px;
+      font-weight: 600;
+    }
+
+    .stat-content {
+      flex: 1;
     }
 
     .stat-value {
-      font-size: 24px;
+      font-size: 18px;
       font-weight: 700;
-      color: #034ea2;
+      color: #111827;
+      line-height: 1;
       margin-bottom: 4px;
     }
 
     .stat-label {
       font-size: 11px;
-      color: #64748b;
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
+      color: #6b7280;
+      font-weight: 500;
     }
 
-    /* File Input */
-    .file-input-wrapper {
+    /* Buttons */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding: 0 16px;
+      height: 36px;
+      border: none;
+      border-radius: 6px;
+      font-size: 13px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.15s ease;
+      width: 100%;
+      font-family: inherit;
+    }
+
+    .btn-primary {
+      background: #034ea2;
+      color: white;
+    }
+
+    .btn-primary:hover:not(:disabled) {
+      background: #023a7a;
+    }
+
+    .btn-primary:active:not(:disabled) {
+      background: #022e61;
+    }
+
+    .btn-success {
+      background: #10b981;
+      color: white;
+    }
+
+    .btn-success:hover:not(:disabled) {
+      background: #059669;
+    }
+
+    .btn-outline {
+      background: white;
+      color: #034ea2;
+      border: 1px solid #034ea2;
+    }
+
+    .btn-outline:hover:not(:disabled) {
+      background: #f0f7ff;
+    }
+
+    .btn:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+
+    .btn-icon {
+      font-size: 14px;
+    }
+
+    /* File Upload */
+    .file-upload {
       position: relative;
-      margin-bottom: 12px;
+      margin-bottom: 16px;
     }
 
-    input[type="file"] {
+    .file-upload-input {
       display: none;
     }
 
-    .file-input-label {
+    .file-upload-label {
       display: flex;
       align-items: center;
       justify-content: center;
       gap: 8px;
-      width: 100%;
-      padding: 12px 20px;
-      border: 2px dashed #034ea2;
-      border-radius: 8px;
-      background: #f8fafc;
-      color: #034ea2;
-      font-size: 14px;
-      font-weight: 600;
+      padding: 32px 20px;
+      border: 2px dashed #d1d5db;
+      border-radius: 6px;
+      background: #fafbfc;
+      color: #6b7280;
+      font-size: 13px;
       cursor: pointer;
       transition: all 0.2s ease;
     }
 
-    .file-input-label:hover {
+    .file-upload-label:hover {
+      border-color: #034ea2;
       background: #f0f7ff;
-      border-color: #0260c4;
+      color: #034ea2;
     }
 
-    .file-name {
-      font-size: 12px;
-      color: #64748b;
+    .file-upload-label.has-file {
+      border-color: #10b981;
+      background: #f0fdf4;
+      color: #065f46;
+      border-style: solid;
+    }
+
+    .file-info {
       margin-top: 8px;
+      font-size: 11px;
+      color: #6b7280;
       text-align: center;
-      font-style: italic;
     }
 
-    /* Divider */
-    .divider {
-      height: 1px;
-      background: linear-gradient(to right, transparent, #e2e8f0, transparent);
-      margin: 24px 0;
+    .file-info.has-file {
+      color: #065f46;
+      font-weight: 500;
     }
 
-    /* Hidden */
-    .hidden {
-      display: none !important;
+    /* Alert */
+    .alert {
+      padding: 12px 16px;
+      border-radius: 6px;
+      font-size: 12px;
+      line-height: 1.5;
+      margin-bottom: 16px;
     }
 
-    /* Error/Warning List */
+    .alert-info {
+      background: #eff6ff;
+      border: 1px solid #bfdbfe;
+      color: #1e40af;
+    }
+
+    .alert-success {
+      background: #f0fdf4;
+      border: 1px solid #bbf7d0;
+      color: #166534;
+    }
+
+    .alert-warning {
+      background: #fffbeb;
+      border: 1px solid #fde68a;
+      color: #92400e;
+    }
+
+    .alert-error {
+      background: #fef2f2;
+      border: 1px solid #fecaca;
+      color: #991b1b;
+    }
+
+    .alert-title {
+      font-weight: 600;
+      margin-bottom: 4px;
+    }
+
+    /* Message List */
     .message-list {
-      max-height: 150px;
+      max-height: 120px;
       overflow-y: auto;
       margin-top: 8px;
-      padding: 8px;
-      background: white;
-      border-radius: 4px;
-      font-size: 11px;
+      padding: 0;
+      list-style: none;
     }
 
     .message-item {
-      padding: 4px 0;
-      border-bottom: 1px solid #fee;
+      padding: 6px 0;
+      font-size: 11px;
+      border-bottom: 1px solid rgba(0, 0, 0, 0.05);
     }
 
     .message-item:last-child {
       border-bottom: none;
     }
 
-    .warning-item {
-      padding: 4px 0;
-      border-bottom: 1px solid #fef3c7;
-    }
-
-    .warning-item:last-child {
-      border-bottom: none;
-    }
-
     /* Loading Spinner */
     .spinner {
-      border: 3px solid #f3f4f6;
-      border-top: 3px solid #034ea2;
+      border: 2px solid rgba(255, 255, 255, 0.3);
+      border-top: 2px solid white;
       border-radius: 50%;
-      width: 20px;
-      height: 20px;
-      animation: spin 0.8s linear infinite;
+      width: 14px;
+      height: 14px;
+      animation: spin 0.6s linear infinite;
     }
 
     @keyframes spin {
@@ -290,120 +394,192 @@
       100% { transform: rotate(360deg); }
     }
 
+    /* Utility Classes */
+    .hidden {
+      display: none !important;
+    }
+
+    .text-muted {
+      color: #6b7280;
+    }
+
+    .text-small {
+      font-size: 11px;
+    }
+
+    .mb-0 { margin-bottom: 0; }
+    .mb-8 { margin-bottom: 8px; }
+    .mb-12 { margin-bottom: 12px; }
+    .mb-16 { margin-bottom: 16px; }
+    .mb-20 { margin-bottom: 20px; }
+
     /* Scrollbar */
     ::-webkit-scrollbar {
-      width: 8px;
+      width: 6px;
+      height: 6px;
     }
 
     ::-webkit-scrollbar-track {
-      background: #f1f5f9;
+      background: #f3f4f6;
     }
 
     ::-webkit-scrollbar-thumb {
-      background: #cbd5e1;
-      border-radius: 4px;
+      background: #d1d5db;
+      border-radius: 3px;
     }
 
     ::-webkit-scrollbar-thumb:hover {
-      background: #94a3b8;
+      background: #9ca3af;
+    }
+
+    /* Divider */
+    .divider {
+      height: 1px;
+      background: #e5e7eb;
+      margin: 20px 0;
+    }
+
+    /* Icon styles */
+    .icon {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
     }
   </style>
 </head>
 <body>
   <!-- Header -->
   <div class="header">
-    <h1>🌐 Translation Plugin</h1>
-    <p>Extract, Translate, and Apply text seamlessly</p>
+    <div class="header-content">
+      <div>
+        <div class="header-title">Translation Manager</div>
+        <div class="header-subtitle">Extract, translate, and apply text transformations</div>
+      </div>
+    </div>
   </div>
 
   <!-- Main Container -->
   <div class="container">
     
-    <!-- Step 1: Extract Text -->
-    <div class="section" id="step1-section">
-      <div class="section-title">
-        <span class="step-number">1</span>
-        <span>Extract Text from Frame</span>
+    <!-- Workflow Progress -->
+    <div class="workflow">
+      <div class="workflow-step active" id="workflow-step-1">
+        <div class="step-circle">1</div>
+        <div class="step-label">Extract</div>
       </div>
-      <div class="info-card">
-        Select a frame in Figma, then click below to extract all text elements with their formatting metadata.
+      <div class="workflow-step" id="workflow-step-2">
+        <div class="step-circle">2</div>
+        <div class="step-label">Export</div>
       </div>
-      <br>
-      <button class="btn btn-primary" id="extract-btn">
-        <span>📤</span>
-        <span>Extract Text</span>
-      </button>
+      <div class="workflow-step" id="workflow-step-3">
+        <div class="step-circle">3</div>
+        <div class="step-label">Translate</div>
+      </div>
+      <div class="workflow-step" id="workflow-step-4">
+        <div class="step-circle">4</div>
+        <div class="step-label">Apply</div>
+      </div>
     </div>
 
-    <!-- Step 2: Export Excel (Hidden initially) -->
-    <div class="section hidden" id="step2-section">
-      <div class="divider"></div>
-      <div class="section-title">
-        <span class="step-number">2</span>
-        <span>Export to Excel</span>
+    <!-- Step 1: Extract -->
+    <div class="card" id="extract-card">
+      <div class="card-header">
+        <div class="card-title">Extract Text Elements</div>
+        <div class="card-description">Select a frame in your Figma document to extract all text layers with metadata</div>
       </div>
-      
-      <div class="stats">
-        <div class="stat-card">
-          <div class="stat-value" id="text-count">0</div>
-          <div class="stat-label">Text Elements</div>
+      <div class="card-body">
+        <div class="alert alert-info mb-16">
+          <div class="alert-title">Before you begin</div>
+          Ensure you have selected the frame containing the text you want to translate.
         </div>
-        <div class="stat-card">
-          <div class="stat-value">✓</div>
-          <div class="stat-label">Ready to Export</div>
+        <button class="btn btn-primary" id="extract-btn">
+          <span class="btn-icon">↓</span>
+          <span>Extract Text from Selection</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Step 2: Export (Hidden) -->
+    <div class="card hidden" id="export-card">
+      <div class="card-header">
+        <div class="card-title">Export Translation Template</div>
+        <div class="card-description">Download Excel file with extracted text and formatting metadata</div>
+      </div>
+      <div class="card-body">
+        <div class="stats-grid mb-20">
+          <div class="stat-item">
+            <div class="stat-icon" id="text-count-icon">0</div>
+            <div class="stat-content">
+              <div class="stat-value" id="text-count">0</div>
+              <div class="stat-label">Text Elements</div>
+            </div>
+          </div>
+          <div class="stat-item">
+            <div class="stat-icon">✓</div>
+            <div class="stat-content">
+              <div class="stat-value">Ready</div>
+              <div class="stat-label">Status</div>
+            </div>
+          </div>
         </div>
-      </div>
-
-      <div class="info-card success">
-        <strong>Success!</strong> Text extracted with metadata (font, size, color, length). Download the Excel file, add translations, and upload it back.
-      </div>
-      <br>
-      <button class="btn btn-success" id="export-btn">
-        <span>📥</span>
-        <span>Download Excel File</span>
-      </button>
-    </div>
-
-    <!-- Step 3: Upload & Apply (Hidden initially) -->
-    <div class="section hidden" id="step3-section">
-      <div class="divider"></div>
-      <div class="section-title">
-        <span class="step-number">3</span>
-        <span>Upload Translations</span>
-      </div>
-      
-      <div class="info-card">
-        Upload the Excel file with completed translations. The plugin will verify text length and warn about potential overflows.
-      </div>
-      <br>
-      
-      <div class="file-input-wrapper">
-        <input type="file" id="file-input" accept=".xlsx,.xls">
-        <label for="file-input" class="file-input-label">
-          <span>📎</span>
-          <span>Choose Excel File</span>
-        </label>
-        <div class="file-name" id="file-name">No file selected</div>
-      </div>
-
-      <button class="btn btn-primary" id="apply-btn" disabled>
-        <span>✨</span>
-        <span>Apply Translations</span>
-      </button>
-    </div>
-
-    <!-- Results Section (Hidden initially) -->
-    <div class="section hidden" id="results-section">
-      <div class="divider"></div>
-      <div class="info-card" id="results-card">
-        <!-- Results will be displayed here -->
+        
+        <div class="alert alert-success mb-16">
+          <div class="alert-title">Extraction Complete</div>
+          Text elements captured with font styles, colors, sizes, and hyperlinks preserved.
+        </div>
+        
+        <button class="btn btn-success" id="export-btn">
+          <span class="btn-icon">⬇</span>
+          <span>Download Excel Template</span>
+        </button>
       </div>
     </div>
 
-    <!-- Warnings Section (Hidden initially) -->
-    <div class="section hidden" id="warnings-section">
-      <div class="info-card warning" id="warnings-card">
-        <!-- Warnings will be displayed here -->
+    <!-- Step 3: Upload & Apply (Hidden) -->
+    <div class="card hidden" id="upload-card">
+      <div class="card-header">
+        <div class="card-title">Upload Translated File</div>
+        <div class="card-description">Import your completed translation file to apply changes</div>
+      </div>
+      <div class="card-body">
+        <div class="alert alert-info mb-16">
+          <div class="alert-title">Translation Guidelines</div>
+          Fill the "Translation" column in the Excel file. Keep character count similar to avoid text overflow.
+        </div>
+        
+        <div class="file-upload">
+          <input type="file" id="file-input" class="file-upload-input" accept=".xlsx,.xls">
+          <label for="file-input" class="file-upload-label" id="file-upload-label">
+            <span class="btn-icon">📎</span>
+            <span>Choose translated Excel file</span>
+          </label>
+          <div class="file-info" id="file-info">No file selected</div>
+        </div>
+
+        <button class="btn btn-primary" id="apply-btn" disabled>
+          <span class="btn-icon">✓</span>
+          <span>Apply Translations</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Results (Hidden) -->
+    <div class="card hidden" id="results-card">
+      <div class="card-header">
+        <div class="card-title">Application Results</div>
+      </div>
+      <div class="card-body">
+        <div id="results-content"></div>
+      </div>
+    </div>
+
+    <!-- Warnings (Hidden) -->
+    <div class="card hidden" id="warnings-card">
+      <div class="card-header">
+        <div class="card-title">Warnings & Notices</div>
+      </div>
+      <div class="card-body">
+        <div id="warnings-content"></div>
       </div>
     </div>
 
@@ -422,15 +598,30 @@
     const exportBtn = document.getElementById('export-btn');
     const applyBtn = document.getElementById('apply-btn');
     const fileInput = document.getElementById('file-input');
-    const fileName = document.getElementById('file-name');
+    const fileUploadLabel = document.getElementById('file-upload-label');
+    const fileInfo = document.getElementById('file-info');
     const textCount = document.getElementById('text-count');
+    const textCountIcon = document.getElementById('text-count-icon');
     
-    const step2Section = document.getElementById('step2-section');
-    const step3Section = document.getElementById('step3-section');
-    const resultsSection = document.getElementById('results-section');
+    const extractCard = document.getElementById('extract-card');
+    const exportCard = document.getElementById('export-card');
+    const uploadCard = document.getElementById('upload-card');
     const resultsCard = document.getElementById('results-card');
-    const warningsSection = document.getElementById('warnings-section');
     const warningsCard = document.getElementById('warnings-card');
+    
+    const workflowStep1 = document.getElementById('workflow-step-1');
+    const workflowStep2 = document.getElementById('workflow-step-2');
+    const workflowStep3 = document.getElementById('workflow-step-3');
+    const workflowStep4 = document.getElementById('workflow-step-4');
+
+    // Update workflow
+    function updateWorkflow(step) {
+      [workflowStep1, workflowStep2, workflowStep3, workflowStep4].forEach((s, i) => {
+        s.classList.remove('active', 'completed');
+        if (i + 1 < step) s.classList.add('completed');
+        if (i + 1 === step) s.classList.add('active');
+      });
+    }
 
     // Extract Text Button
     extractBtn.addEventListener('click', () => {
@@ -449,7 +640,10 @@
       const file = e.target.files[0];
       if (file) {
         uploadedFile = file;
-        fileName.textContent = file.name;
+        fileUploadLabel.classList.add('has-file');
+        fileUploadLabel.innerHTML = `<span class="btn-icon">✓</span><span>${file.name}</span>`;
+        fileInfo.textContent = `${(file.size / 1024).toFixed(1)} KB • ${new Date().toLocaleString()}`;
+        fileInfo.classList.add('has-file');
         applyBtn.disabled = false;
       }
     });
@@ -471,7 +665,7 @@
 
     // Helper function to get color as hex
     function getColorHex(fills) {
-      if (!fills || fills === 'mixed' || !Array.isArray(fills) || fills.length === 0) {
+      if (!fills || fills === 'MIXED' || !Array.isArray(fills) || fills.length === 0) {
         return 'N/A';
       }
       const fill = fills[0];
@@ -530,12 +724,16 @@
       ];
 
       XLSX.writeFile(wb, 'figma_translations.xlsx');
+      
+      // Update workflow
+      updateWorkflow(3);
     }
 
     // Read Excel File
     function readExcelFile(file) {
       applyBtn.disabled = true;
       applyBtn.innerHTML = '<div class="spinner"></div><span>Processing...</span>';
+      updateWorkflow(4);
 
       const reader = new FileReader();
       reader.onload = (e) => {
@@ -573,7 +771,7 @@
         } catch (error) {
           showError('Error reading Excel file: ' + error.message);
           applyBtn.disabled = false;
-          applyBtn.innerHTML = '<span>✨</span><span>Apply Translations</span>';
+          applyBtn.innerHTML = '<span class="btn-icon">✓</span><span>Apply Translations</span>';
         }
       };
       reader.readAsArrayBuffer(file);
@@ -581,9 +779,13 @@
 
     // Show Error
     function showError(message) {
-      resultsSection.classList.remove('hidden');
-      resultsCard.className = 'info-card error';
-      resultsCard.innerHTML = `<strong>Error:</strong> ${message}`;
+      resultsCard.classList.remove('hidden');
+      document.getElementById('results-content').innerHTML = `
+        <div class="alert alert-error">
+          <div class="alert-title">Error</div>
+          ${message}
+        </div>
+      `;
     }
 
     // Handle Messages from Plugin
@@ -593,63 +795,69 @@
       if (msg.type === 'text-extracted') {
         extractedData = msg.data;
         textCount.textContent = msg.count;
+        textCountIcon.textContent = msg.count;
         
-        // Show step 2 and 3
-        step2Section.classList.remove('hidden');
-        step3Section.classList.remove('hidden');
+        // Show export and upload cards
+        exportCard.classList.remove('hidden');
+        uploadCard.classList.remove('hidden');
+        
+        // Update workflow
+        updateWorkflow(2);
         
         // Reset extract button
         extractBtn.disabled = false;
-        extractBtn.innerHTML = '<span>📤</span><span>Extract Text</span>';
+        extractBtn.innerHTML = '<span class="btn-icon">↓</span><span>Extract Text from Selection</span>';
       }
 
       if (msg.type === 'translation-applied') {
         applyBtn.disabled = false;
-        applyBtn.innerHTML = '<span>✨</span><span>Apply Translations</span>';
+        applyBtn.innerHTML = '<span class="btn-icon">✓</span><span>Apply Translations</span>';
         
-        resultsSection.classList.remove('hidden');
+        resultsCard.classList.remove('hidden');
         
         // Show warnings if any
         if (msg.warnings && msg.warnings.length > 0) {
-          warningsSection.classList.remove('hidden');
-          let warningHtml = '<strong>⚠ Text Overflow Warnings:</strong><div class="message-list">';
+          warningsCard.classList.remove('hidden');
+          let warningHtml = '<div class="alert alert-warning">';
+          warningHtml += '<div class="alert-title">Text Overflow Warnings</div>';
+          warningHtml += '<ul class="message-list">';
           msg.warnings.forEach(warning => {
-            warningHtml += `<div class="warning-item">${warning}</div>`;
+            warningHtml += `<li class="message-item">${warning}</li>`;
           });
-          warningHtml += '</div>';
-          warningsCard.innerHTML = warningHtml;
+          warningHtml += '</ul></div>';
+          document.getElementById('warnings-content').innerHTML = warningHtml;
         } else {
-          warningsSection.classList.add('hidden');
+          warningsCard.classList.add('hidden');
         }
         
         if (msg.errorCount === 0) {
-          resultsCard.className = 'info-card success';
-          resultsCard.innerHTML = `
-            <strong>Success!</strong> Applied ${msg.successCount} translation(s) successfully.
+          document.getElementById('results-content').innerHTML = `
+            <div class="alert alert-success">
+              <div class="alert-title">Success</div>
+              Applied ${msg.successCount} translation(s) successfully.
+            </div>
           `;
         } else {
-          resultsCard.className = 'info-card error';
-          let errorHtml = `
-            <strong>Partial Success:</strong> Applied ${msg.successCount} translation(s), 
-            but ${msg.errorCount} failed.
-          `;
+          let errorHtml = '<div class="alert alert-error">';
+          errorHtml += `<div class="alert-title">Partial Success</div>`;
+          errorHtml += `Applied ${msg.successCount} translation(s), but ${msg.errorCount} failed.`;
           
           if (msg.errors && msg.errors.length > 0) {
-            errorHtml += '<div class="message-list">';
+            errorHtml += '<ul class="message-list">';
             msg.errors.forEach(err => {
-              errorHtml += `<div class="message-item">${err}</div>`;
+              errorHtml += `<li class="message-item">${err}</li>`;
             });
-            errorHtml += '</div>';
+            errorHtml += '</ul>';
           }
-          
-          resultsCard.innerHTML = errorHtml;
+          errorHtml += '</div>';
+          document.getElementById('results-content').innerHTML = errorHtml;
         }
       }
 
       if (msg.type === 'error') {
         showError(msg.message);
         extractBtn.disabled = false;
-        extractBtn.innerHTML = '<span>📤</span><span>Extract Text</span>';
+        extractBtn.innerHTML = '<span class="btn-icon">↓</span><span>Extract Text from Selection</span>';
       }
     };
   </script>
