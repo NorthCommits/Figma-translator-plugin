@@ -2,10 +2,10 @@ const fs = require('fs');
 require('dotenv').config();
 
 // Check if API key exists
-if (!process.env.OPENAI_API_KEY) {
-  console.error('❌ Error: OPENAI_API_KEY not found in .env file');
-  console.error('Please create a .env file with your OpenAI API key:');
-  console.error('OPENAI_API_KEY=sk-proj-your-key-here');
+if (!process.env.DEEPL_API_KEY) {
+  console.error('❌ Error: DEEPL_API_KEY not found in .env file');
+  console.error('Please create a .env file with your DeepL API key:');
+  console.error('DEEPL_API_KEY=your-key-here');
   process.exit(1);
 }
 
@@ -16,7 +16,7 @@ let uiHtml = fs.readFileSync('./ui.html', 'utf8');
 const apiKeyScript = `
 <script>
   // API Key injected at build time
-  const OPENAI_API_KEY = '${process.env.OPENAI_API_KEY}';
+  const DEEPL_API_KEY = '${process.env.DEEPL_API_KEY}';
 </script>
 `;
 
@@ -27,5 +27,5 @@ uiHtml = uiHtml.replace('</head>', `${apiKeyScript}</head>`);
 fs.writeFileSync('./ui-compiled.html', uiHtml);
 
 console.log('✓ TypeScript compiled to code.js');
-console.log('✓ UI compiled with API key injected');
+console.log('✓ UI compiled with DeepL API key injected');
 console.log('✓ Build complete!');

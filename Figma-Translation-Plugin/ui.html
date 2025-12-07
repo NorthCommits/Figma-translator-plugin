@@ -264,14 +264,6 @@
       font-size: 14px;
     }
 
-    /* Button Group */
-    .btn-group {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 12px;
-      margin-bottom: 16px;
-    }
-
     /* Form Elements */
     .form-group {
       margin-bottom: 16px;
@@ -858,53 +850,55 @@
       }
     });
 
-    // Translate texts using OpenAI
+    // Translate texts using DeepL
     async function translateTexts(texts, targetLang) {
-      const batchSize = 10;
-      const batches = [];
-      
-      for (let i = 0; i < texts.length; i += batchSize) {
-        batches.push(texts.slice(i, i + batchSize));
-      }
-
       const allTranslations = [];
+      
+      // DeepL language codes mapping
+      const deeplLanguageCodes = {
+        'Spanish': 'ES',
+        'French': 'FR',
+        'German': 'DE',
+        'Italian': 'IT',
+        'Portuguese': 'PT-PT',
+        'Russian': 'RU',
+        'Japanese': 'JA',
+        'Korean': 'KO',
+        'Chinese': 'ZH',
+        'Arabic': 'AR',
+        'Hindi': 'HI',
+        'Dutch': 'NL'
+      };
+
+      const targetLangCode = deeplLanguageCodes[targetLang] || 'ES';
       let processedCount = 0;
 
-      for (const batch of batches) {
-        const prompt = `Translate the following texts to ${targetLang}. Return ONLY a JSON array of translated strings, maintaining the same order. Do not include any explanations or additional text.\n\nTexts to translate:\n${JSON.stringify(batch)}`;
+      // Process texts one by one
+      for (let i = 0; i < texts.length; i++) {
+        const text = texts[i];
+        
+        const formData = new URLSearchParams();
+        formData.append('auth_key', DEEPL_API_KEY);
+        formData.append('text', text);
+        formData.append('target_lang', targetLangCode);
 
-        const response = await fetch('https://api.openai.com/v1/chat/completions', {
+        const response = await fetch('https://api.deepl.com/v2/translate', {
           method: 'POST',
           headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${OPENAI_API_KEY}`
+            'Content-Type': 'application/x-www-form-urlencoded',
           },
-          body: JSON.stringify({
-            model: 'gpt-4o-mini',
-            messages: [
-              {
-                role: 'system',
-                content: 'You are a professional translator. Return only valid JSON arrays of translated strings.'
-              },
-              {
-                role: 'user',
-                content: prompt
-              }
-            ],
-            temperature: 0.3
-          })
+          body: formData
         });
 
         if (!response.ok) {
-          const error = await response.json();
-          throw new Error(error.error?.message || 'Translation failed');
+          const errorText = await response.text();
+          throw new Error(`DeepL API error: ${errorText}`);
         }
 
         const data = await response.json();
-        const translatedBatch = JSON.parse(data.choices[0].message.content);
-        allTranslations.push(...translatedBatch);
+        allTranslations.push(data.translations[0].text);
 
-        processedCount += batch.length;
+        processedCount++;
         const progress = (processedCount / texts.length) * 100;
         progressFill.style.width = `${progress}%`;
         progressText.textContent = `Translating ${processedCount} of ${texts.length}...`;

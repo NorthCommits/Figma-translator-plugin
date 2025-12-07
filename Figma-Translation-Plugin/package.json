@@ -4,8 +4,8 @@
   "description": "Figma Translation Plugin with AI",
   "main": "code.js",
   "scripts": {
-    "build": "tsc -p tsconfig.json && node build-ui.js",
-    "watch": "tsc -p tsconfig.json --watch",
+    "build": "npx tsc -p tsconfig.json && node build-ui.js",
+    "watch": "npx tsc -p tsconfig.json --watch",
     "lint": "eslint --ext .ts,.tsx --ignore-pattern node_modules .",
     "lint:fix": "eslint --ext .ts,.tsx --ignore-pattern node_modules --fix ."
   },
