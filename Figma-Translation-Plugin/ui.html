@@ -157,6 +157,164 @@
       padding: 20px;
     }
 
+    /* Excel Table */
+    .excel-table-container {
+      margin-bottom: 20px;
+      border: 1px solid #e5e7eb;
+      border-radius: 6px;
+      overflow: hidden;
+      background: white;
+    }
+
+    .excel-table-wrapper {
+      max-height: 400px;
+      overflow-y: auto;
+      overflow-x: auto;
+    }
+
+    .excel-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 12px;
+    }
+
+    .excel-table thead {
+      position: sticky;
+      top: 0;
+      z-index: 10;
+      background: #f9fafb;
+    }
+
+    .excel-table th {
+      padding: 12px 16px;
+      text-align: left;
+      font-weight: 600;
+      color: #374151;
+      border-bottom: 2px solid #e5e7eb;
+      border-right: 1px solid #e5e7eb;
+      background: #f9fafb;
+      white-space: nowrap;
+    }
+
+    .excel-table th:last-child {
+      border-right: none;
+    }
+
+    .excel-table tbody tr {
+      transition: background-color 0.1s ease;
+    }
+
+    .excel-table tbody tr:hover {
+      background-color: #f9fafb;
+    }
+
+    .excel-table tbody tr:nth-child(even) {
+      background-color: #fafbfc;
+    }
+
+    .excel-table tbody tr:nth-child(even):hover {
+      background-color: #f3f4f6;
+    }
+
+    .excel-table td {
+      padding: 10px 16px;
+      border-bottom: 1px solid #e5e7eb;
+      border-right: 1px solid #e5e7eb;
+      color: #1f2937;
+      vertical-align: top;
+    }
+
+    .excel-table td:last-child {
+      border-right: none;
+    }
+
+    .excel-table tbody tr:last-child td {
+      border-bottom: none;
+    }
+
+    /* Editable Cell */
+    .editable-cell {
+      min-width: 200px;
+      max-width: 400px;
+      cursor: text;
+      position: relative;
+    }
+
+    .editable-cell textarea {
+      width: 100%;
+      min-height: 60px;
+      padding: 8px;
+      border: 1px solid #d1d5db;
+      border-radius: 4px;
+      font-family: inherit;
+      font-size: 12px;
+      line-height: 1.5;
+      resize: vertical;
+      background: white;
+      transition: all 0.2s ease;
+    }
+
+    .editable-cell textarea:focus {
+      outline: none;
+      border-color: #034ea2;
+      box-shadow: 0 0 0 3px rgba(3, 78, 162, 0.1);
+      background: #ffffff;
+    }
+
+    .editable-cell textarea.edited {
+      border-left: 3px solid #f59e0b;
+      background: #fffbeb;
+    }
+
+    .editable-cell textarea:disabled {
+      background: #f3f4f6;
+      cursor: not-allowed;
+    }
+
+    /* ID Column */
+    .id-cell {
+      font-family: 'Courier New', monospace;
+      color: #6b7280;
+      font-size: 11px;
+      white-space: nowrap;
+      min-width: 80px;
+    }
+
+    /* Text Preview Cell */
+    .text-preview {
+      max-width: 300px;
+      word-wrap: break-word;
+      white-space: pre-wrap;
+    }
+
+    /* Table Info Bar */
+    .table-info-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 12px 16px;
+      background: #f9fafb;
+      border-bottom: 1px solid #e5e7eb;
+      font-size: 11px;
+      color: #6b7280;
+    }
+
+    .table-info-bar strong {
+      color: #034ea2;
+      font-weight: 600;
+    }
+
+    .edit-indicator {
+      display: inline-block;
+      font-size: 10px;
+      color: #f59e0b;
+      font-weight: 600;
+      margin-left: 8px;
+      padding: 2px 6px;
+      background: #fef3c7;
+      border-radius: 3px;
+    }
+
     /* Stats Grid */
     .stats-grid {
       display: grid;
@@ -463,17 +621,18 @@
 
     /* Scrollbar */
     ::-webkit-scrollbar {
-      width: 6px;
-      height: 6px;
+      width: 8px;
+      height: 8px;
     }
 
     ::-webkit-scrollbar-track {
       background: #f3f4f6;
+      border-radius: 4px;
     }
 
     ::-webkit-scrollbar-thumb {
       background: #d1d5db;
-      border-radius: 3px;
+      border-radius: 4px;
     }
 
     ::-webkit-scrollbar-thumb:hover {
@@ -564,6 +723,35 @@
           <span class="btn-icon">↓</span>
           <span>Extract Text from Selection</span>
         </button>
+      </div>
+    </div>
+
+    <!-- Extracted Data Table (Hidden initially) -->
+    <div class="card hidden" id="data-table-card">
+      <div class="card-header">
+        <div class="card-title">Extracted Text Data</div>
+        <div class="card-description">Review and edit extracted text below. Changes will be reflected in Excel export and AI translation.</div>
+      </div>
+      <div class="card-body" style="padding: 0;">
+        <div class="excel-table-container">
+          <div class="table-info-bar">
+            <span>Showing <strong id="table-row-count">0</strong> text elements</span>
+            <span>Scroll to view all entries →</span>
+          </div>
+          <div class="excel-table-wrapper">
+            <table class="excel-table">
+              <thead>
+                <tr>
+                  <th>ID</th>
+                  <th>Extracted Text</th>
+                </tr>
+              </thead>
+              <tbody id="data-table-body">
+                <!-- Table rows will be inserted here -->
+              </tbody>
+            </table>
+          </div>
+        </div>
       </div>
     </div>
 
@@ -721,10 +909,14 @@
     const progressText = document.getElementById('progress-text');
     
     const extractCard = document.getElementById('extract-card');
+    const dataTableCard = document.getElementById('data-table-card');
     const exportCard = document.getElementById('export-card');
     const uploadCard = document.getElementById('upload-card');
     const resultsCard = document.getElementById('results-card');
     const warningsCard = document.getElementById('warnings-card');
+    
+    const dataTableBody = document.getElementById('data-table-body');
+    const tableRowCount = document.getElementById('table-row-count');
     
     const workflowStep1 = document.getElementById('workflow-step-1');
     const workflowStep2 = document.getElementById('workflow-step-2');
@@ -738,6 +930,83 @@
         if (i + 1 < step) s.classList.add('completed');
         if (i + 1 === step) s.classList.add('active');
       });
+    }
+
+    // Update edit count tracker
+    function updateEditCount() {
+      const textareas = document.querySelectorAll('.editable-cell textarea');
+      let editCount = 0;
+      
+      textareas.forEach(textarea => {
+        if (textarea.value !== textarea.dataset.originalText) {
+          editCount++;
+        }
+      });
+      
+      // Update the info bar
+      const infoBar = document.querySelector('.table-info-bar');
+      let infoText = `Showing <strong>${extractedData.length}</strong> text elements`;
+      
+      if (editCount > 0) {
+        infoText += ` <span class="edit-indicator">${editCount} edited</span>`;
+      }
+      
+      infoBar.innerHTML = `
+        <span>${infoText}</span>
+        <span>Scroll to view all entries →</span>
+      `;
+    }
+
+    // Populate data table
+    function populateDataTable() {
+      dataTableBody.innerHTML = '';
+      tableRowCount.textContent = extractedData.length;
+
+      extractedData.forEach((item, index) => {
+        const row = document.createElement('tr');
+        
+        // ID Cell
+        const idCell = document.createElement('td');
+        idCell.className = 'id-cell';
+        idCell.textContent = item.id;
+        row.appendChild(idCell);
+
+        // Extracted Text Cell (editable)
+        const textCell = document.createElement('td');
+        textCell.className = 'editable-cell';
+        
+        const textarea = document.createElement('textarea');
+        textarea.value = item.text;
+        textarea.dataset.index = index;
+        textarea.dataset.originalText = item.text; // Store original for comparison
+        
+        // Update data when user edits
+        textarea.addEventListener('input', (e) => {
+          const idx = parseInt(e.target.dataset.index);
+          const originalText = e.target.dataset.originalText;
+          
+          // Update the data - THIS IS THE KEY LINE
+          extractedData[idx].text = e.target.value;
+          
+          // Visual feedback if edited
+          if (e.target.value !== originalText) {
+            e.target.classList.add('edited');
+          } else {
+            e.target.classList.remove('edited');
+          }
+          
+          // Update edit count in info bar
+          updateEditCount();
+        });
+        
+        textCell.appendChild(textarea);
+        row.appendChild(textCell);
+
+        dataTableBody.appendChild(row);
+      });
+
+      // Show the table card
+      dataTableCard.classList.remove('hidden');
     }
 
     // Extract Text Button
@@ -781,6 +1050,7 @@
       };
 
       try {
+        // THIS USES THE EDITED TEXT FROM extractedData
         const translations = await translateTexts(
           extractedData.map(item => item.text),
           languageNames[language]
@@ -948,7 +1218,7 @@
       return 'N/A';
     }
 
-    // Export to Excel
+    // Export to Excel - THIS USES THE EDITED TEXT FROM extractedData
     function exportToExcel() {
       const data = extractedData.map(item => {
         // Clean text to prevent Excel formatting issues - each extraction in one cell
@@ -960,7 +1230,7 @@
 
         return {
           'Extraction_ID': item.id,
-          'Extracted_Text': cleanText(item.text),
+          'Extracted_Text': cleanText(item.text), // THIS IS THE EDITED TEXT
           'Translation': '',
           'Font_Family': getFontInfo(item.fontName),
           'Font_Size': item.fontSize !== 'MIXED' ? item.fontSize : 'Mixed',
@@ -1087,6 +1357,9 @@
         extractedData = msg.data;
         textCount.textContent = msg.count;
         textCountIcon.textContent = msg.count;
+        
+        // Populate the data table
+        populateDataTable();
         
         // Show export card
         exportCard.classList.remove('hidden');
