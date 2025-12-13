@@ -12,8 +12,10 @@
   "ui": "ui-compiled.html",
   "networkAccess": {
     "allowedDomains": [
-      "https://cdn.sheetjs.com",
-      "https://api.deepl.com"
+      "https://cdn.sheetjs.com"
+    ],
+    "devAllowedDomains": [
+      "http://localhost:3000"
     ]
   }
 }

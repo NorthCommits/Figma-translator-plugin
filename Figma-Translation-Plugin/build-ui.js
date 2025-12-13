@@ -12,20 +12,12 @@ if (!process.env.DEEPL_API_KEY) {
 // Read the original ui.html
 let uiHtml = fs.readFileSync('./ui.html', 'utf8');
 
-// Inject the API key into the HTML
-const apiKeyScript = `
-<script>
-  // API Key injected at build time
-  const DEEPL_API_KEY = '${process.env.DEEPL_API_KEY}';
-</script>
-`;
-
-// Insert the script before the closing </head> tag
-uiHtml = uiHtml.replace('</head>', `${apiKeyScript}</head>`);
-
-// Write the compiled UI
+// Write the compiled UI (no changes needed, API key stays on server)
 fs.writeFileSync('./ui-compiled.html', uiHtml);
 
 console.log('✓ TypeScript compiled to code.js');
-console.log('✓ UI compiled with DeepL API key injected');
+console.log('✓ UI compiled successfully');
 console.log('✓ Build complete!');
+console.log('');
+console.log('⚠️  Remember to start the proxy server:');
+console.log('   npm run proxy');

@@ -850,7 +850,7 @@
       }
     });
 
-    // Translate texts using DeepL
+    // Translate texts using DeepL via proxy
     async function translateTexts(texts, targetLang) {
       const allTranslations = [];
       
@@ -877,22 +877,20 @@
       for (let i = 0; i < texts.length; i++) {
         const text = texts[i];
         
-        const formData = new URLSearchParams();
-        formData.append('auth_key', DEEPL_API_KEY);
-        formData.append('text', text);
-        formData.append('target_lang', targetLangCode);
-
-        const response = await fetch('https://api.deepl.com/v2/translate', {
+        const response = await fetch('http://localhost:3000/translate', {
           method: 'POST',
           headers: {
-            'Content-Type': 'application/x-www-form-urlencoded',
+            'Content-Type': 'application/json',
           },
-          body: formData
+          body: JSON.stringify({
+            text: text,
+            target_lang: targetLangCode
+          })
         });
 
         if (!response.ok) {
-          const errorText = await response.text();
-          throw new Error(`DeepL API error: ${errorText}`);
+          const error = await response.json();
+          throw new Error(error.error || 'Translation failed');
         }
 
         const data = await response.json();
